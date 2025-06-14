@@ -1,7 +1,8 @@
 "use client";
 import BookCreate from "./components/BookCreate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookList from "./components/BookList";
+import axios from "axios";
 
 interface Book {
   id: number;
@@ -11,15 +12,28 @@ interface Book {
 export default function Home() {
   const [books, setBooks] = useState<Book[]>([]);
 
-  const generateId = () => {
-    return Math.round(Math.random() * 9999);
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    const response = await axios.get("http://localhost:3001/books");
+
+    setBooks(response.data);
   };
 
-  const addBook = (title: string) => {
-    setBooks((prev) => [...prev, { id: generateId(), title }]);
+  const addBook = async (title: string) => {
+    const response = await axios.post("http://localhost:3001/books", { title });
+
+    // It will return a new book so add it to the local list
+    const updatedBooks = [...books, response.data];
+
+    setBooks(updatedBooks);
   };
 
-  const deleteBook = (bookId) => {
+  const deleteBook = async (bookId) => {
+    await axios.delete(`http://localhost:3001/books/${bookId}`);
+
     const updatedBooks = books.filter((book) => {
       return book.id !== bookId;
     });
