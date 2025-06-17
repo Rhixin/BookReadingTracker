@@ -28,7 +28,7 @@ const BookEdit = ({ book, onCancel, onEdit }) => {
           Cancel
         </button>
         <button type="submit" className="btn btn-success">
-          Save
+          Save Changes
         </button>
       </div>
     </form>
